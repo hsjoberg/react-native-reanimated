@@ -573,7 +573,13 @@ using namespace facebook::react;
 
   __weak __typeof__(self) weakSelf = self;
   [_uiManager
-      addUIBlock:^(__unused RCTUIManager *manager, __unused NSDictionary<NSNumber *, REAUIView *> *viewRegistry) {
+    addUIBlock:^(__unused RCTUIManager *manager, __unused NSDictionary<NSNumber *,
+#if TARGET_OS_OSX
+    NSView
+#else
+    UIView
+#endif
+    *> *viewRegistry) {
         __typeof__(self) strongSelf = weakSelf;
         if (strongSelf == nil) {
           return;

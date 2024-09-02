@@ -237,12 +237,18 @@ RCT_EXPORT_MODULE(ReanimatedModule);
   REANodesManager *nodesManager = _nodesManager;
 
   [uiManager
-      addUIBlock:^(__unused RCTUIManager *manager, __unused NSDictionary<NSNumber *, REAUIView *> *viewRegistry) {
-        for (AnimatedOperation operation in operations) {
-          operation(nodesManager);
-        }
-        [nodesManager operationsBatchDidComplete];
-      }];
+    addUIBlock:^(__unused RCTUIManager *manager, __unused NSDictionary<NSNumber *,
+  #if TARGET_OS_OSX
+    NSView
+  #else
+    UIView
+  #endif
+    *> *viewRegistry) {
+      for (AnimatedOperation operation in operations) {
+        operation(nodesManager);
+      }
+      [nodesManager operationsBatchDidComplete];
+  }];
 }
 
 #endif // RCT_NEW_ARCH_ENABLED

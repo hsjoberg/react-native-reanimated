@@ -232,7 +232,13 @@ std::atomic<bool> hasPendingBlocks;
   }
 
   // Perform layout (possibly animated)
-  return ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, REAUIView *> *viewRegistry) {
+    return ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *,
+#if TARGET_OS_OSX
+      NSView
+#else
+      UIView
+#endif
+    *> *viewRegistry) {
     const RCTFrameData *frameDataArray = (const RCTFrameData *)framesData.bytes;
     RCTLayoutAnimationGroup *layoutAnimationGroup = [uiManager valueForKey:@"_layoutAnimationGroup"];
 
@@ -371,10 +377,17 @@ std::atomic<bool> hasPendingBlocks;
   if (hasPendingBlocks) {
     ++isFlushingBlocks;
     hasPendingBlocks = false;
-    [self reanimated_addUIBlock:^(
-              __unused RCTUIManager *manager, __unused NSDictionary<NSNumber *, REAUIView *> *viewRegistry) {
-      --isFlushingBlocks;
-    }];
+      [self reanimated_addUIBlock:^(
+          __unused RCTUIManager *manager,
+          __unused NSDictionary<NSNumber *,
+#if TARGET_OS_OSX
+          NSView
+#else
+          UIView
+#endif
+          *> *viewRegistry) {
+        --isFlushingBlocks;
+      }];
   }
   [self reanimated_flushUIBlocksWithCompletion:completion];
 }
